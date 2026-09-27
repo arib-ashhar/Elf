@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// chief-config.js — Configuration utilities for chief-of-staff plugin
+// elf-config.js — Configuration utilities for elf plugin
 
 const path = require('path');
 

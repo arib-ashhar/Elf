@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// chief-runtime.js — Shared utilities for chief-of-staff hooks
+// elf-runtime-utils.js — Shared utilities for elf hooks
 
 const fs = require('fs');
 

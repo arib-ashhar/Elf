@@ -1,13 +1,38 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/elf-activate.js\"",
+            "timeout": 5,
+            "statusMessage": "Loading elf workflow..."
+          }
+        ]
+      }
+    ],
     "SubagentStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/chief-subagent-inject.js\"",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/elf-subagent.js\"",
             "timeout": 5,
-            "statusMessage": "Loading chief-of-staff contracts..."
+            "statusMessage": "Loading elf contracts..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/elf-tracker.js\"",
+            "timeout": 5,
+            "statusMessage": "Tracking delegation..."
           }
         ]
       }

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// test-runner.js — Automated test suite for chief-of-staff hooks
+// test-runner.js — Automated test suite for elf hooks
 
 const { spawn } = require('child_process');
 const path = require('path');
@@ -43,7 +43,7 @@ async function checkFileExists(filePath) {
 }
 
 async function runTests() {
-  log(colors.blue, '\n=== Chief-of-Staff Hooks Test Suite ===\n');
+  log(colors.blue, '\n=== Elf Hooks Test Suite ===\n');
 
   let totalPassed = 0;
   let totalFailed = 0;
@@ -52,9 +52,9 @@ async function runTests() {
   log(colors.yellow, '📁 Test Suite 1: File Structure');
   const requiredFiles = [
     'hooks/hooks.json',
-    'hooks/chief-config.js',
-    'hooks/chief-runtime.js',
-    'hooks/chief-subagent-inject.js',
+    'hooks/elf-config.js',
+    'hooks/elf-runtime-utils.js',
+    'hooks/elf-subagent-inject.js',
     'core/delegation-contract.md',
     'core/result-contract.md',
     'core/roles/planner.md',
@@ -129,20 +129,20 @@ async function runTests() {
   try {
     const hooksJson = JSON.parse(fs.readFileSync(hooksJsonPath, 'utf8'));
 
-    if (hooksJson.hooks && hooksJson.hooks.SubagentStart) {
-      log(colors.green, '  ✓ hooks.json has SubagentStart hook');
+    if (hooksJson.hooks && hooksJson.hooks.SessionStart && hooksJson.hooks.SubagentStart && hooksJson.hooks.UserPromptSubmit) {
+      log(colors.green, '  ✓ hooks.json has lifecycle hooks');
       totalPassed++;
     } else {
-      log(colors.red, '  ✗ hooks.json missing SubagentStart hook');
+      log(colors.red, '  ✗ hooks.json missing lifecycle hook');
       totalFailed++;
     }
 
     const command = hooksJson.hooks.SubagentStart[0]?.hooks[0]?.command;
-    if (command && command.includes('chief-subagent-inject.js')) {
-      log(colors.green, '  ✓ SubagentStart points to chief-subagent-inject.js');
+    if (command && command.includes('elf-subagent.js')) {
+      log(colors.green, '  ✓ SubagentStart points to cross-platform sub-agent hook');
       totalPassed++;
     } else {
-      log(colors.red, '  ✗ SubagentStart command incorrect');
+      log(colors.red, '  ✗ SubagentStart command is not cross-platform');
       totalFailed++;
     }
   } catch (e) {
@@ -154,7 +154,7 @@ async function runTests() {
   const claudePluginPath = path.join(__dirname, '..', '.claude-plugin', 'plugin.json');
   try {
     const claudePlugin = JSON.parse(fs.readFileSync(claudePluginPath, 'utf8'));
-    if (claudePlugin.hooks && claudePlugin.hooks.includes('hooks.json')) {
+    if (claudePlugin.hooks === './hooks/hooks.json') {
       log(colors.green, '  ✓ .claude-plugin/plugin.json references hooks');
       totalPassed++;
     } else {
@@ -169,7 +169,7 @@ async function runTests() {
   const codexPluginPath = path.join(__dirname, '..', '.codex-plugin', 'plugin.json');
   try {
     const codexPlugin = JSON.parse(fs.readFileSync(codexPluginPath, 'utf8'));
-    if (codexPlugin.hooks && codexPlugin.hooks.includes('hooks.json')) {
+    if (codexPlugin.hooks === './hooks/hooks.json') {
       log(colors.green, '  ✓ .codex-plugin/plugin.json references hooks');
       totalPassed++;
     } else {

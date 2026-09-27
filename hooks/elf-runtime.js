@@ -2,8 +2,16 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const STATE_FILE = '.chief-of-staff-active';
-const DELEGATION_STATE_FILE = '.chief-of-staff-delegations.json';
+const STATE_FILE = '.elf-active';
+const DELEGATION_STATE_FILE = '.elf-delegations.json';
+const PHASE_STATE_FILE = '.elf-state';
+const PHASES = new Set([
+  'IDLE',
+  'PLANNING',
+  'TESTING',
+  'REVIEWING',
+  'DONE',
+]);
 
 // Detect platform: Codex sets PLUGIN_DATA, Claude Code doesn't
 const isCodex = Boolean(process.env.PLUGIN_DATA);
@@ -20,12 +28,38 @@ function getStateDir() {
 const stateDir = getStateDir();
 const statePath = path.join(stateDir, STATE_FILE);
 const delegationStatePath = path.join(stateDir, DELEGATION_STATE_FILE);
+const phaseStatePath = path.join(stateDir, PHASE_STATE_FILE);
 
-// Mark chief-of-staff as active
+function setPhase(phase) {
+  const normalized = String(phase || '').trim().toUpperCase();
+  if (!PHASES.has(normalized) && !/^CODING \d+\/\d+$/.test(normalized)) return false;
+
+  try {
+    fs.mkdirSync(path.dirname(phaseStatePath), { recursive: true });
+    fs.writeFileSync(phaseStatePath, `[ELF: ${normalized}]\n`);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function readPhase() {
+  try {
+    const phase = fs.readFileSync(phaseStatePath, 'utf8').split(/\r?\n/, 1)[0].trim();
+    return /^\[ELF: (?:IDLE|PLANNING|CODING \d+\/\d+|TESTING|REVIEWING|DONE)\]$/.test(phase)
+      ? phase
+      : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// Mark elf as active
 function activate() {
   try {
     fs.mkdirSync(path.dirname(statePath), { recursive: true });
     fs.writeFileSync(statePath, new Date().toISOString());
+    setPhase('IDLE');
   } catch (e) {
     // Best-effort, don't block on state file
   }
@@ -40,7 +74,7 @@ function deactivate() {
   }
 }
 
-// Check if chief-of-staff is active
+// Check if elf is active
 function isActive() {
   try {
     return fs.existsSync(statePath);
@@ -96,7 +130,7 @@ function clearDelegations() {
 // Codex: Always needs JSON with systemMessage + hookSpecificOutput
 function writeHookOutput(event, context = '') {
   if (isCodex) {
-    const output = { systemMessage: 'CHIEF-OF-STAFF:ACTIVE' };
+    const output = { systemMessage: 'ELF:ACTIVE' };
     if (context) {
       output.hookSpecificOutput = {
         hookEventName: event,
@@ -130,6 +164,8 @@ module.exports = {
   isActive,
   isCodex,
   readDelegationState,
+  readPhase,
+  setPhase,
   writeHookOutput,
   writeDelegationState,
 };

@@ -1,8 +1,8 @@
-# Chief-of-staff workflow
+# Elf workflow
 
 ## Role
 
-The chief of staff owns coordination and synthesis. It does not directly implement the task when delegation is available. It reads enough repository context to form precise briefs, then delegates work to focused sub-agents.
+The elf owns coordination and synthesis. It does not directly implement the task when delegation is available. It reads enough repository context to form precise briefs, then delegates work to focused sub-agents.
 
 ## Operating rules
 
@@ -16,7 +16,7 @@ The chief of staff owns coordination and synthesis. It does not directly impleme
 
 ## Delegation modes
 
-Use the host harness's native sub-agent mechanism when available. The chief should explicitly prefer a fresh context for each independent work item.
+Use the host harness's native sub-agent mechanism when available. The elf should explicitly prefer a fresh context for each independent work item.
 
 If the harness cannot create sub-agents, run the roles sequentially using the same contracts and disclose that context isolation was unavailable. Never claim that separate context was used when it was not.
 

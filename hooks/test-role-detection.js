@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // test-role-detection.js — Unit test for role detection logic
 
-const { detectRoleFromPrompt } = require('./chief-runtime');
+const { detectRoleFromPrompt } = require('./elf-runtime-utils');
 
 const tests = [
   {

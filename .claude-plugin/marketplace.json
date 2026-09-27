@@ -1,20 +1,20 @@
 {
-  "name": "chief-of-staff",
+  "name": "elf",
   "owner": {
     "name": "arib-ashhar"
   },
   "interface": {
-    "displayName": "Chief of Staff"
+    "displayName": "Elf"
   },
   "metadata": {
-    "description": "A harness-agnostic chief-of-staff workflow for delegating software work to focused sub-agents."
+    "description": "A harness-agnostic elf workflow for delegating software work to focused sub-agents."
   },
   "plugins": [
     {
-      "name": "chief-of-staff",
+      "name": "elf",
       "source": {
         "source": "url",
-        "url": "https://github.com/arib-ashhar/chief-of-staff.git",
+        "url": "https://github.com/arib-ashhar/Elf.git",
         "ref": "main"
       },
       "category": "Productivity"

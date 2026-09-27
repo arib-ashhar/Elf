@@ -1,19 +1,19 @@
-# Chief-of-Staff Plugin - Lifecycle Hooks
+# Elf Plugin - Lifecycle Hooks
 
-The chief-of-staff plugin now includes lifecycle hooks for Claude Code and Codex.
+The elf plugin now includes lifecycle hooks for Claude Code and Codex.
 
 ## Installed Hooks
 
 ### 1. SessionStart Hook
-**File**: `hooks/chief-of-staff-activate.js`
+**File**: `hooks/elf-activate.js`
 **Triggers**: On session startup, resume, clear, or compact
 **Purpose**: 
-- Writes `.chief-of-staff-active` state flag
+- Writes `.elf-active` state flag
 - Announces workflow availability
 - Injects core workflow documentation into session context
 
 ### 2. SubagentStart Hook
-**File**: `hooks/chief-of-staff-subagent.js`
+**File**: `hooks/elf-subagent.js`
 **Triggers**: When any sub-agent is spawned via Agent tool
 **Purpose**:
 - Detects role from agent metadata (planner/coder/reviewer/test-runner)
@@ -27,41 +27,57 @@ The chief-of-staff plugin now includes lifecycle hooks for Claude Code and Codex
 - Keywords: "test-runner", "test", "testing" → test-runner role
 - No match → injects general workflow
 
+The reviewer role runs two passes: correctness first, then a Ponytail-inspired
+over-engineering pass using `delete:`, `stdlib:`, `native:`, `yagni:`, and
+`shrink:` findings, ending with a net-lines estimate.
+
 ### 3. UserPromptSubmit Hook
-**File**: `hooks/chief-of-staff-tracker.js`
+**File**: `hooks/elf-tracker.js`
 **Triggers**: On every user prompt submission
 **Purpose**:
-- Detects `@chief-of-staff` invocations
-- Responds to "chief-of-staff status" queries
+- Detects `@elf` invocations
+- Responds to "elf status" queries
 - Shows active delegation state
+
+### StatusLine
+
+The status-line scripts read `.elf-state` from `CLAUDE_CONFIG_DIR`
+or `~/.claude` and print one of:
+
+`[ELF: IDLE]`, `[ELF: PLANNING]`, `[ELF: CODING 1/1]`,
+`[ELF: TESTING]`, `[ELF: REVIEWING]`, or `[ELF: DONE]`.
+
+Configure Claude Code's `statusLine` command to run
+`hooks/elf-statusline.sh` on Unix or `hooks/elf-statusline.ps1` on Windows.
 
 ## Runtime Infrastructure
 
-**File**: `hooks/chief-of-staff-runtime.js`
+**File**: `hooks/elf-runtime.js`
 **Provides**:
 - Cross-platform hook output formatting (Claude Code vs Codex)
-- State management (`.chief-of-staff-active` flag)
-- Delegation tracking (`.chief-of-staff-delegations.json`)
+- State management (`.elf-active` flag)
+- Delegation tracking (`.elf-delegations.json`)
 - Platform detection (auto-detects Claude Code vs Codex via env vars)
 
 ## State Files
 
 Located in `~/.claude/` (Claude Code) or `PLUGIN_DATA` (Codex):
 
-- `.chief-of-staff-active` - Marks plugin as active (timestamp)
-- `.chief-of-staff-delegations.json` - Tracks active sub-agent delegations
+- `.elf-active` - Marks plugin as active (timestamp)
+- `.elf-delegations.json` - Tracks active sub-agent delegations
+- `.elf-state` - Current workflow phase for the status line
 
 ## How It Works
 
-1. **Session starts** → `chief-of-staff-activate.js` runs
+1. **Session starts** → `elf-activate.js` runs
    - Writes state flag
    - Loads workflow into session context
    
-2. **User types prompt** → `chief-of-staff-tracker.js` runs
-   - Detects `@chief-of-staff` → shows delegation reminder
+2. **User types prompt** → `elf-tracker.js` runs
+   - Detects `@elf` → shows delegation reminder
    - Detects "status" query → shows active delegations
    
-3. **Chief spawns sub-agent** → `chief-of-staff-subagent.js` runs
+3. **Elf spawns sub-agent** → `elf-subagent.js` runs
    - Reads agent metadata
    - Injects role-specific contract
    - Sub-agent knows it's a planner/coder/reviewer/test-runner
@@ -69,10 +85,12 @@ Located in `~/.claude/` (Claude Code) or `PLUGIN_DATA` (Codex):
 ## Configuration
 
 Hooks are registered in:
-- `.claude-plugin/plugin.json` → `"hooks": "./hooks/claude-codex-hooks.json"`
-- `.codex-plugin/plugin.json` → `"hooks": "../hooks/claude-codex-hooks.json"`
+- `.claude-plugin/plugin.json` → `"hooks": "./hooks/hooks.json"`
+- `.codex-plugin/plugin.json` → `"hooks": "./hooks/hooks.json"`
 
-The `claude-codex-hooks.json` defines all three hook events.
+The shared `hooks/hooks.json` defines all three hook events. Codex also
+provides `PLUGIN_ROOT`, `PLUGIN_DATA`, and the `CLAUDE_PLUGIN_ROOT`
+compatibility variable to bundled hooks.
 
 ## Testing
 
@@ -81,12 +99,12 @@ To test the hooks:
 1. **Install plugin**:
    ```
    /plugin marketplace add <your-repo>
-   /plugin install chief-of-staff@chief-of-staff
+   /plugin install elf@elf
    ```
 
 2. **Start new session** - SessionStart hook should announce workflow
 
-3. **Type `@chief-of-staff`** - UserPromptSubmit hook should respond
+3. **Type `@elf`** - UserPromptSubmit hook should respond
 
 4. **Spawn sub-agent** - SubagentStart hook injects role contract
 

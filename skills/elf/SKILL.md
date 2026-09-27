@@ -1,11 +1,11 @@
 ---
-name: chief-of-staff
+name: elf
 description: Coordinate substantial software tasks by decomposing them into precise planner, coder, reviewer, and test-runner work items, using fresh sub-agent contexts when the host harness supports them.
 ---
 
-# Chief of Staff
+# Elf
 
-Use this workflow when the user explicitly asks for chief-of-staff delegation or when a substantial software task benefits from isolated planning, implementation, review, and testing contexts.
+Use this workflow when the user explicitly asks for elf delegation or when a substantial software task benefits from isolated planning, implementation, review, and testing contexts.
 
 Read the shared workflow and contracts from `core/` in this plugin before coordinating work:
 

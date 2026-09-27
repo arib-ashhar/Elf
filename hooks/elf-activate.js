@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// chief-of-staff — SessionStart hook
-// Activates chief-of-staff workflow and announces availability
+// elf — SessionStart hook
+// Activates elf workflow and announces availability
 
 const fs = require('fs');
 const path = require('path');
-const { activate, writeHookOutput, isCodex } = require('./chief-of-staff-runtime');
+const { activate, writeHookOutput, isCodex } = require('./elf-runtime');
 
 // Find plugin root
 const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || path.resolve(__dirname, '..');
@@ -13,12 +13,12 @@ const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || path.resolve(__dirname, '..
 activate();
 
 // Build session start message
-let output = '# Chief-of-Staff Orchestration Available\n\n';
-output += 'The chief-of-staff workflow is active. Use it to delegate substantial software tasks ';
+let output = '# Elf Orchestration Available\n\n';
+output += 'The elf workflow is active. Use it to delegate substantial software tasks ';
 output += 'through isolated planner, coder, reviewer, and test-runner sub-agents.\n\n';
 
 output += '## When to Use\n\n';
-output += '- User explicitly requests `@chief-of-staff`\n';
+output += '- User explicitly requests `@elf`\n';
 output += '- Substantial tasks that benefit from isolated contexts\n';
 output += '- Tasks requiring planning → implementation → review → testing flow\n\n';
 

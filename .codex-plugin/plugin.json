@@ -1,19 +1,19 @@
 {
-  "name": "chief-of-staff",
+  "name": "elf",
   "version": "0.1.0",
-  "description": "Chief Of Staff plugin",
+  "description": "Elf plugin",
   "author": {
     "name": "Local developer"
   },
   "skills": "./skills/",
-  "hooks": "../hooks/hooks.json",
+  "hooks": "./hooks/hooks.json",
   "interface": {
-    "displayName": "Chief Of Staff",
-    "shortDescription": "Use Chief Of Staff in Codex.",
-    "longDescription": "Chief Of Staff adds a local Codex plugin scaffold.",
+    "displayName": "Elf",
+    "shortDescription": "Use Elf in Codex.",
+    "longDescription": "Elf adds a local Codex plugin scaffold.",
     "developerName": "Local developer",
     "category": "Productivity",
     "capabilities": [],
-    "defaultPrompt": "Help me use Chief Of Staff."
+    "defaultPrompt": "Help me use Elf."
   }
 }

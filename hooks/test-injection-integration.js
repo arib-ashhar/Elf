@@ -2,7 +2,10 @@
 // test-injection-integration.js — Integration test for full injection flow
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
+
+const testConfigDir = fs.mkdtempSync(path.join(os.tmpdir(), 'elf-injection-'));
 
 // Mock stdin with test prompts
 function testInjection(prompt) {
@@ -11,8 +14,10 @@ function testInjection(prompt) {
 
     // Spawn the injection script as a child process
     const { spawn } = require('child_process');
-    const scriptPath = path.join(__dirname, 'chief-subagent-inject.js');
-    const proc = spawn('node', [scriptPath]);
+    const scriptPath = path.join(__dirname, 'elf-subagent-inject.js');
+    const proc = spawn('node', [scriptPath], {
+      env: { ...process.env, CLAUDE_CONFIG_DIR: testConfigDir },
+    });
 
     let output = '';
 
@@ -60,7 +65,22 @@ async function runTests() {
     failed++;
   }
 
-  // Test 3: No role = empty injection
+  // Test 3: Reviewer injection includes both review passes and Ponytail tags
+  const reviewerResult = await testInjection('Your role is: reviewer. Review the diff.');
+  if (
+    reviewerResult.includes('Pass 1: Correctness') &&
+    reviewerResult.includes('Pass 2: Over-engineering') &&
+    reviewerResult.includes('delete:') &&
+    reviewerResult.includes('net: -<N> lines possible.')
+  ) {
+    console.log('✓ Reviewer role injects two-pass methodology');
+    passed++;
+  } else {
+    console.log('✗ Reviewer role is missing two-pass methodology');
+    failed++;
+  }
+
+  // Test 4: No role = empty injection
   const noRoleResult = await testInjection('Just analyze this code.');
   if (noRoleResult === '') {
     console.log('✓ No role detected - empty injection');

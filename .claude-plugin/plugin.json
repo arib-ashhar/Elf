@@ -1,9 +1,9 @@
 {
-  "name": "chief-of-staff",
+  "name": "elf",
   "version": "0.1.0",
-  "description": "A harness-agnostic chief-of-staff workflow for delegating software work to focused sub-agents.",
+  "description": "A harness-agnostic elf workflow for delegating software work to focused sub-agents.",
   "author": {
-    "name": "Chief of Staff contributors"
+    "name": "Elf contributors"
   },
   "hooks": "./hooks/hooks.json"
 }

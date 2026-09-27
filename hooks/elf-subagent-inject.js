@@ -1,17 +1,18 @@
 #!/usr/bin/env node
-// chief-subagent-inject.js — SubagentStart hook for automatic contract injection
+// elf-subagent-inject.js — SubagentStart hook for automatic contract injection
 
 const {
   getCoreRolePath,
   getDelegationContractPath,
   getResultContractPath,
-} = require('./chief-config');
+} = require('./elf-config');
 
 const {
   detectRoleFromPrompt,
   readFileWithFallback,
   writeHookOutput,
-} = require('./chief-runtime');
+} = require('./elf-runtime-utils');
+const { setPhase } = require('./elf-runtime');
 
 let input = '';
 let done = false;
@@ -29,6 +30,14 @@ function finish() {
     const role = detectRoleFromPrompt(prompt);
 
     if (role) {
+      const phaseByRole = {
+        planner: 'PLANNING',
+        coder: 'CODING 1/1',
+        'test-runner': 'TESTING',
+        reviewer: 'REVIEWING',
+      };
+      setPhase(phaseByRole[role]);
+
       // Load contracts and role-specific instructions
       const delegationContract = readFileWithFallback(
         getDelegationContractPath(),
@@ -47,7 +56,7 @@ function finish() {
 
       // Concatenate all contracts and inject into sub-agent context
       const injectedContext = [
-        '# Chief-of-Staff Sub-Agent Context',
+        '# Elf Sub-Agent Context',
         '',
         '## Delegation Contract',
         delegationContract,

@@ -1,14 +1,14 @@
 {
-    "name": "chief-of-staff",
+    "name": "elf",
     "interface": {
-      "displayName": "Chief of Staff"
+      "displayName": "Elf"
     },
     "plugins": [
       {
-        "name": "chief-of-staff",
+        "name": "elf",
         "source": {
           "source": "url",
-          "url": "https://github.com/arib-ashhar/chief-of-staff.git",
+          "url": "https://github.com/arib-ashhar/Elf.git",
           "ref": "main"
         },
         "policy": {

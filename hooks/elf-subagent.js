@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// chief-of-staff — SubagentStart hook to inject role contracts
+// elf — SubagentStart hook to inject role contracts
 // Detects sub-agent role and injects appropriate contract + instructions
 
 const fs = require('fs');
 const path = require('path');
-const { writeHookOutput } = require('./chief-of-staff-runtime');
+const { writeHookOutput, setPhase } = require('./elf-runtime');
 
 // Find plugin root (hooks are in PLUGIN_ROOT/hooks/)
 const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || path.resolve(__dirname, '..');
@@ -69,7 +69,7 @@ function finish() {
       const delegationContract = readContract('delegation-contract');
       const resultContract = readContract('result-contract');
 
-      let context = '# Chief-of-Staff Workflow Context\n\n';
+      let context = '# Elf Workflow Context\n\n';
       context += workflow + '\n\n';
       if (delegationContract) context += delegationContract + '\n\n';
       if (resultContract) context += resultContract + '\n';
@@ -78,9 +78,17 @@ function finish() {
       return;
     }
 
+    const phaseByRole = {
+      planner: 'PLANNING',
+      coder: 'CODING 1/1',
+      'test-runner': 'TESTING',
+      reviewer: 'REVIEWING',
+    };
+    setPhase(phaseByRole[role]);
+
     // Build context for the detected role
-    let context = `# Chief-of-Staff: ${role.toUpperCase()} Role\n\n`;
-    context += 'You are acting as the **' + role + '** in a chief-of-staff delegation workflow.\n\n';
+    let context = `# Elf: ${role.toUpperCase()} Role\n\n`;
+    context += 'You are acting as the **' + role + '** in a elf delegation workflow.\n\n';
 
     // Inject role definition
     const roleContent = readRole(role);
@@ -124,7 +132,7 @@ function finish() {
         context += '- Review implementation against objective and acceptance criteria\n';
         context += '- Inspect diff and relevant tests\n';
         context += '- Look for correctness issues, regressions, edge cases\n';
-        context += '- DO NOT make edits unless chief assigns remediation\n';
+        context += '- DO NOT make edits unless elf assigns remediation\n';
         context += '- Return findings ordered by severity\n';
         break;
       case 'test-runner':

@@ -12,4 +12,4 @@ risks: known limitations or regressions to investigate
 follow_up: dependent work still needed
 ```
 
-The chief records only the concise result needed for the next decision. Full traces remain in the worker context unless a specific detail is required.
+The elf records only the concise result needed for the next decision. Full traces remain in the worker context unless a specific detail is required.

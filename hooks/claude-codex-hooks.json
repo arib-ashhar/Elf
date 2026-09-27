@@ -6,9 +6,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/chief-of-staff-activate.js\"",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/elf-activate.js\"",
             "timeout": 5,
-            "statusMessage": "Loading chief-of-staff workflow..."
+            "statusMessage": "Loading elf workflow..."
           }
         ]
       }
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/chief-of-staff-subagent.js\"",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/elf-subagent.js\"",
             "timeout": 5,
             "statusMessage": "Injecting role contract..."
           }
@@ -30,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/chief-of-staff-tracker.js\"",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/elf-tracker.js\"",
             "timeout": 5,
             "statusMessage": "Tracking delegation..."
           }
