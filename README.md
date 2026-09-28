@@ -1,4 +1,8 @@
-# Elf
+<p align="center">
+  <img src="assets/Elf.png" width="220" alt="Elf orchestration agent">
+</p>
+
+<h1 align="center">Elf</h1>
 
 A harness-agnostic, skill-driven workflow for delegating software tasks to focused sub-agents.
 
