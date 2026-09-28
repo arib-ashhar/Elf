@@ -121,6 +121,28 @@ async function runTests() {
     totalFailed++;
   }
 
+  // Test 3b: Codex delegation guidance
+  log(colors.yellow, '\n🧭 Test Suite 3b: Codex Delegation Guidance');
+  const codexWorkflowTestPath = path.join(__dirname, 'test-codex-workflow.js');
+  const codexWorkflowResult = await runScript(codexWorkflowTestPath);
+
+  if (codexWorkflowResult.code === 0) {
+    const matches = codexWorkflowResult.stdout.match(/(\d+) passed, (\d+) failed/);
+    if (matches) {
+      const passed = parseInt(matches[1]);
+      const failed = parseInt(matches[2]);
+      totalPassed += passed;
+      totalFailed += failed;
+      codexWorkflowResult.stdout.split('\n').forEach(line => {
+        if (line.includes('✓')) log(colors.green, `  ${line}`);
+        else if (line.includes('✗')) log(colors.red, `  ${line}`);
+      });
+    }
+  } else {
+    log(colors.red, '  ✗ Codex delegation guidance test failed to run');
+    totalFailed++;
+  }
+
   // Test 4: Hook configuration validation
   log(colors.yellow, '\n🔧 Test Suite 4: Hook Configuration');
 
@@ -169,11 +191,11 @@ async function runTests() {
   const codexPluginPath = path.join(__dirname, '..', '.codex-plugin', 'plugin.json');
   try {
     const codexPlugin = JSON.parse(fs.readFileSync(codexPluginPath, 'utf8'));
-    if (codexPlugin.hooks === './hooks/hooks.json') {
-      log(colors.green, '  ✓ .codex-plugin/plugin.json references hooks');
+    if (!Object.prototype.hasOwnProperty.call(codexPlugin, 'hooks')) {
+      log(colors.green, '  ✓ .codex-plugin/plugin.json omits unsupported hooks field');
       totalPassed++;
     } else {
-      log(colors.red, '  ✗ .codex-plugin/plugin.json missing hooks reference');
+      log(colors.red, '  ✗ .codex-plugin/plugin.json contains unsupported hooks field');
       totalFailed++;
     }
   } catch (e) {

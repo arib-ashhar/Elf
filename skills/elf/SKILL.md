@@ -16,9 +16,11 @@ Read the shared workflow and contracts from `core/` in this plugin before coordi
 
 ## Host adaptation
 
-Use the current harness's native sub-agent/session mechanism if it provides one. Create a fresh context for each independent work item and pass a precise delegation contract. Do not assume that a sub-agent means a visible terminal; context isolation and terminal visibility are separate concerns.
+Use the current harness's native sub-agent/session mechanism if it provides one. For Codex, first inspect the available tool catalog for the exact native delegation tools `multi_agent_v1__spawn_agent` and `multi_agent_v1__wait_agent`. When both are available, use them to create and manage fresh contexts; do not fall back merely because the tools are deferred or absent from the default visible tool summary.
 
-If native delegation is unavailable, execute the roles sequentially in the current session and explicitly report that fallback. Preserve the same contracts and decision gates.
+Every spawn brief must identify the worker role and include the delegation contract. Track each returned agent ID, wait for the required dependency before assigning dependent work, and record the worker's result contract before proceeding. Do not claim isolated delegation unless a spawn call actually succeeded.
+
+If either native delegation tool is genuinely unavailable, execute the roles sequentially in the current session and explicitly report that fallback. If a spawn or wait call fails, report the actual tool failure and retry or replan; do not silently reinterpret a failed call as capability unavailability. Preserve the same contracts and decision gates in fallback mode.
 
 ## Default sequence
 
@@ -27,6 +29,6 @@ If native delegation is unavailable, execute the roles sequentially in the curre
 3. Run focused tests after implementation.
 4. Ask the reviewer to inspect the resulting diff against the original intent.
 5. Re-run affected tests after remediation.
-6. Synthesize the outcome, changed files, validation, risks, and unfinished work.
+6. Mark the workflow complete (`DONE`), clear active delegation state, and synthesize the outcome, changed files, validation, risks, and unfinished work.
 
 Do not expose full worker traces in the parent context unless a specific detail is needed to resolve a conflict or failure. Do not claim completion when a required dependency failed or when acceptance criteria remain unchecked.

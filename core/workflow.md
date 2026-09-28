@@ -16,7 +16,9 @@ The elf owns coordination and synthesis. It does not directly implement the task
 
 ## Delegation modes
 
-Use the host harness's native sub-agent mechanism when available. The elf should explicitly prefer a fresh context for each independent work item.
+Use the host harness's native sub-agent mechanism when available. In Codex, the coordinator must discover and use `multi_agent_v1__spawn_agent` and `multi_agent_v1__wait_agent` when those tools are available. The elf should explicitly prefer a fresh context for each independent work item and track the returned agent IDs.
+
+Do not infer that delegation is unavailable from a summarized tool list. Fall back only when the exact native tools cannot be resolved or a documented spawn failure remains after retry/replanning. A failed tool call must be reported as a tool failure, not silently converted into a sequential fallback.
 
 If the harness cannot create sub-agents, run the roles sequentially using the same contracts and disclose that context isolation was unavailable. Never claim that separate context was used when it was not.
 
@@ -27,3 +29,4 @@ If the harness cannot create sub-agents, run the roles sequentially using the sa
 - Prefer a worktree or equivalent isolation when the harness supports it.
 - Do not ask a reviewer to rewrite code unless that is explicitly the assigned outcome.
 - Preserve unrelated user changes.
+- Set the final workflow phase to `DONE` and clear delegation state after all acceptance checks pass.
