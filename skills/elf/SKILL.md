@@ -20,6 +20,30 @@ Use the current harness's native sub-agent/session mechanism if it provides one.
 
 Every spawn brief must identify the worker role and include the delegation contract. Track each returned agent ID, wait for the required dependency before assigning dependent work, and record the worker's result contract before proceeding. Do not claim isolated delegation unless a spawn call actually succeeded.
 
+### Wait-loop contract
+
+After spawning workers, preserve every returned agent ID and repeatedly call
+`multi_agent_v1__wait_agent` for the IDs that are required by the next step. A
+completed wait call is not the same as a completed worker: a timeout or
+`No agents completed yet` response is an interim result. Preserve the pending
+IDs and wait again.
+
+Continue local work during a timeout only when it is independent of the pending
+worker results. Do not assign dependent work, synthesize results, or mark the
+workflow `DONE` while a required agent is `pending_init` or `running`.
+
+Handle terminal states explicitly:
+
+- `completed`: collect and validate the worker's result contract.
+- `failed`: retry with a corrected brief, replan, or report the failure.
+- `blocked`: identify the missing dependency or report the blocker.
+- `interrupted`, `shutdown`, or `not_found`: report the host failure and replan
+  with a replacement worker before final synthesis; unresolved host failures
+  prohibit `DONE`.
+
+Only proceed to final synthesis after every required agent is terminal and all
+required result contracts and acceptance checks have been collected.
+
 If either native delegation tool is genuinely unavailable, execute the roles sequentially in the current session and explicitly report that fallback. If a spawn or wait call fails, report the actual tool failure and retry or replan; do not silently reinterpret a failed call as capability unavailability. Preserve the same contracts and decision gates in fallback mode.
 
 ## Default sequence

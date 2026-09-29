@@ -20,6 +20,34 @@ Use the host harness's native sub-agent mechanism when available. In Codex, the 
 
 Do not infer that delegation is unavailable from a summarized tool list. Fall back only when the exact native tools cannot be resolved or a documented spawn failure remains after retry/replanning. A failed tool call must be reported as a tool failure, not silently converted into a sequential fallback.
 
+### Required wait loop
+
+The coordinator must retain every agent ID returned by `spawn_agent` and call
+`wait_agent` repeatedly until each required agent reaches a terminal state. A
+wait operation ending because its timeout elapsed does not mean that an agent
+completed. Responses such as `No agents completed yet` must preserve the active
+IDs and cause another wait.
+
+The coordinator may perform independent local work while agents are pending,
+but it must not start dependent work or synthesize the final result while a
+required agent is `pending_init` or `running`.
+
+Terminal states must be handled as follows:
+
+- `completed`: collect and validate the result contract.
+- `failed`: retry, replan, or report the failure.
+- `blocked`: resolve the dependency or report the blocker.
+- `interrupted`, `shutdown`, or `not_found`: report the host failure and replan
+  with a replacement worker before final synthesis; unresolved host failures
+  prohibit `DONE`.
+
+Before marking the workflow `DONE`, enforce a final no-pending/no-running gate:
+all required agents must be terminal, their result contracts must be recorded,
+and acceptance checks must be complete. Failed or blocked work and unfinished
+follow-up must remain visible in the synthesis. An unresolved host failure must
+not pass the final gate; it requires a replacement worker or an explicitly
+reported blocked outcome instead of `DONE`.
+
 If the harness cannot create sub-agents, run the roles sequentially using the same contracts and disclose that context isolation was unavailable. Never claim that separate context was used when it was not.
 
 ## Repository safety
