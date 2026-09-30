@@ -6,6 +6,7 @@ const path = require('path');
 
 const skill = fs.readFileSync(path.join(__dirname, '..', 'skills', 'elf', 'SKILL.md'), 'utf8');
 const workflow = fs.readFileSync(path.join(__dirname, '..', 'core', 'workflow.md'), 'utf8');
+const readme = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -98,6 +99,8 @@ const checks = [
   ['workflow preserves failed follow-up', workflow.includes('Failed or blocked work')],
   ['workflow requires replacement after host failure', workflow.includes('replacement worker') && workflow.includes('prohibit `DONE`')],
   ['workflow requires DONE', workflow.includes('DONE')],
+  ['Claude marketplace uses repository URL', readme.includes('claude plugin marketplace add https://github.com/arib-ashhar/Elf.git')],
+  ['Claude marketplace avoids Codex catalog path', !readme.includes('claude plugin marketplace add https://github.com/arib-ashhar/Elf/main/.agents/plugins/marketplace.json')],
 ];
 
 let failed = 0;

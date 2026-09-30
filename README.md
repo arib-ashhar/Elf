@@ -17,7 +17,10 @@ The shared workflow lives in `core/` and is deliberately independent of vendor-s
 
 ## Install from the GitHub marketplace
 
-The repository includes a marketplace catalog at `.agents/plugins/marketplace.json`.
+The repository includes marketplace catalogs for each harness:
+
+- Codex: `.agents/plugins/marketplace.json`
+- Claude Code: `.claude-plugin/marketplace.json`
 
 ### Codex
 
@@ -28,8 +31,14 @@ codex plugin add elf@elf
 
 ### Claude Code
 
+If `elf` was already added with the old URL, remove that marketplace first:
+
 ```bash
-claude plugin marketplace add https://github.com/arib-ashhar/Elf/main/.agents/plugins/marketplace.json
+claude plugin marketplace remove elf
+```
+
+```bash
+claude plugin marketplace add https://github.com/arib-ashhar/Elf.git
 claude plugin install elf@elf
 ```
 
