@@ -7,6 +7,7 @@ const path = require('path');
 const skill = fs.readFileSync(path.join(__dirname, '..', 'skills', 'elf', 'SKILL.md'), 'utf8');
 const workflow = fs.readFileSync(path.join(__dirname, '..', 'core', 'workflow.md'), 'utf8');
 const readme = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
+const marketplace = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '.claude-plugin', 'marketplace.json'), 'utf8'));
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -101,6 +102,8 @@ const checks = [
   ['workflow requires DONE', workflow.includes('DONE')],
   ['Claude marketplace uses repository URL', readme.includes('claude plugin marketplace add https://github.com/arib-ashhar/Elf.git')],
   ['Claude marketplace avoids Codex catalog path', !readme.includes('claude plugin marketplace add https://github.com/arib-ashhar/Elf/main/.agents/plugins/marketplace.json')],
+  ['Claude marketplace name differs from plugin name', marketplace.name !== marketplace.plugins[0].name],
+  ['Claude install uses the distinct marketplace name', readme.includes('claude plugin install elf@elf-marketplace')],
 ];
 
 let failed = 0;

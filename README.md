@@ -39,7 +39,7 @@ claude plugin marketplace remove elf
 
 ```bash
 claude plugin marketplace add https://github.com/arib-ashhar/Elf.git
-claude plugin install elf@elf
+claude plugin install elf@elf-marketplace
 ```
 
 After installation, start a new session and invoke it with:
@@ -98,8 +98,8 @@ codex plugin marketplace upgrade elf
 codex plugin add elf@elf
 
 # Claude Code
-claude plugin marketplace update elf
-claude plugin update elf
+claude plugin marketplace update elf-marketplace
+claude plugin update elf@elf-marketplace
 ```
 
 Start a new session after updating so the new skill files are loaded.
