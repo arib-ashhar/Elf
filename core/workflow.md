@@ -20,6 +20,14 @@ Use the host harness's native sub-agent mechanism when available. In Codex, the 
 
 Do not infer that delegation is unavailable from a summarized tool list. Fall back only when the exact native tools cannot be resolved or a documented spawn failure remains after retry/replanning. A failed tool call must be reported as a tool failure, not silently converted into a sequential fallback.
 
+### Role aliases
+
+Assign each spawned agent a human-readable alias in the form `PLANNER-1`, `CODER-1`, `CODER-2`, `REVIEWER-1`, `TEST-RUNNER-1`. Increment the numeric suffix when the same role is used more than once in the workflow. Maintain an internal alias→ID map. Use aliases in all status output and the final synthesis; include the raw ID in parentheses only where traceability requires it.
+
+### Persistent plan
+
+After receiving the planner's result, write the plan to `.elf/plans/<YYYY-MM-DD>-<task-slug>.md` in the working repository before delegating to coders. The file must include: task summary, constraints and assumptions, files likely to change, dependency graph, acceptance criteria, risks, and a timestamp. If the working directory cannot be determined, skip the write and proceed. Do not block implementation on plan persistence.
+
 ### Required wait loop
 
 The coordinator must retain every agent ID returned by `spawn_agent` and call

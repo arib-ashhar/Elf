@@ -24,6 +24,16 @@ For **Codex**, first inspect the available tool catalog for the exact native del
 
 Every spawn brief must identify the worker role and include the delegation contract. Track each returned agent ID, wait for the required dependency before assigning dependent work, and record the worker's result contract before proceeding. Do not claim isolated delegation unless a spawn call actually succeeded.
 
+### Role aliases
+
+Maintain a role-alias map as agents are spawned. Assign names in the form `PLANNER-1`, `CODER-1`, `CODER-2`, `REVIEWER-1`, `TEST-RUNNER-1`, incrementing the suffix when the same role is used more than once. Immediately after each spawn, print a summary line using the alias:
+
+```
+Spawned CODER-1 (01a0f276-a9b7-7f21-a511-d3a8c72342db)
+```
+
+Use aliases (not raw IDs) in all subsequent status output, wait announcements, and the final synthesis. The raw ID may be included in parentheses for traceability but must not be the primary identifier shown to the user.
+
 ### Wait-loop contract
 
 After spawning workers, preserve every returned agent ID and repeatedly call
