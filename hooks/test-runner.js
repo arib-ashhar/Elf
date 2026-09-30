@@ -198,11 +198,11 @@ async function runTests() {
   const claudePluginPath = path.join(__dirname, '..', '.claude-plugin', 'plugin.json');
   try {
     const claudePlugin = JSON.parse(fs.readFileSync(claudePluginPath, 'utf8'));
-    if (claudePlugin.hooks === './hooks/hooks.json') {
-      log(colors.green, '  ✓ .claude-plugin/plugin.json references hooks');
+    if (!Object.prototype.hasOwnProperty.call(claudePlugin, 'hooks')) {
+      log(colors.green, '  ✓ .claude-plugin/plugin.json omits standard hooks reference');
       totalPassed++;
     } else {
-      log(colors.red, '  ✗ .claude-plugin/plugin.json missing hooks reference');
+      log(colors.red, '  ✗ .claude-plugin/plugin.json redundantly references standard hooks');
       totalFailed++;
     }
   } catch (e) {

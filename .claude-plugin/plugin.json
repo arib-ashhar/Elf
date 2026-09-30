@@ -4,6 +4,5 @@
   "description": "A harness-agnostic elf workflow for delegating software work to focused sub-agents.",
   "author": {
     "name": "Elf contributors"
-  },
-  "hooks": "./hooks/hooks.json"
+  }
 }

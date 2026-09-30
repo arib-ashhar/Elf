@@ -84,9 +84,9 @@ Located in `~/.claude/` (Claude Code) or `PLUGIN_DATA` (Codex):
 
 ## Configuration
 
-Hooks are registered in:
-- `.claude-plugin/plugin.json` → `"hooks": "./hooks/hooks.json"`
-- `.codex-plugin/plugin.json` → `"hooks": "./hooks/hooks.json"`
+Claude Code automatically loads the standard `hooks/hooks.json` file, so it is
+not repeated in `.claude-plugin/plugin.json`. The Codex manifest also omits the
+unsupported `hooks` field.
 
 The shared `hooks/hooks.json` defines all three hook events. Codex also
 provides `PLUGIN_ROOT`, `PLUGIN_DATA`, and the `CLAUDE_PLUGIN_ROOT`
@@ -99,7 +99,7 @@ To test the hooks:
 1. **Install plugin**:
    ```
    /plugin marketplace add <your-repo>
-   /plugin install elf@elf
+   /plugin install elf@elf-marketplace
    ```
 
 2. **Start new session** - SessionStart hook should announce workflow
