@@ -16,7 +16,11 @@ Read the shared workflow and contracts from `core/` in this plugin before coordi
 
 ## Host adaptation
 
-Use the current harness's native sub-agent/session mechanism if it provides one. For Codex, first inspect the available tool catalog for the exact native delegation tools `multi_agent_v1__spawn_agent` and `multi_agent_v1__wait_agent`. When both are available, use them to create and manage fresh contexts; do not fall back merely because the tools are deferred or absent from the default visible tool summary.
+Use the current harness's native sub-agent/session mechanism if it provides one.
+
+For **Claude Code**, use the `Task` tool to spawn each worker in a fresh sub-agent context. The Task tool is synchronous: it blocks until the sub-agent finishes and returns the result directly. There is no timeout-based polling loop. Call Task once per worker and collect the returned result; the same dependency gates and terminal-state contracts below still apply.
+
+For **Codex**, first inspect the available tool catalog for the exact native delegation tools `multi_agent_v1__spawn_agent` and `multi_agent_v1__wait_agent`. When both are available, use them to create and manage fresh contexts; do not fall back merely because the tools are deferred or absent from the default visible tool summary.
 
 Every spawn brief must identify the worker role and include the delegation contract. Track each returned agent ID, wait for the required dependency before assigning dependent work, and record the worker's result contract before proceeding. Do not claim isolated delegation unless a spawn call actually succeeded.
 

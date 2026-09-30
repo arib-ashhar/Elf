@@ -143,6 +143,28 @@ async function runTests() {
     totalFailed++;
   }
 
+  // Test 3c: Claude Code delegation guidance
+  log(colors.yellow, '\n🧭 Test Suite 3c: Claude Code Delegation Guidance');
+  const claudeWorkflowTestPath = path.join(__dirname, 'test-claude-workflow.js');
+  const claudeWorkflowResult = await runScript(claudeWorkflowTestPath);
+
+  if (claudeWorkflowResult.code === 0) {
+    const matches = claudeWorkflowResult.stdout.match(/(\d+) passed, (\d+) failed/);
+    if (matches) {
+      const passed = parseInt(matches[1]);
+      const failed = parseInt(matches[2]);
+      totalPassed += passed;
+      totalFailed += failed;
+      claudeWorkflowResult.stdout.split('\n').forEach(line => {
+        if (line.includes('✓')) log(colors.green, `  ${line}`);
+        else if (line.includes('✗')) log(colors.red, `  ${line}`);
+      });
+    }
+  } else {
+    log(colors.red, '  ✗ Claude Code delegation guidance test failed to run');
+    totalFailed++;
+  }
+
   // Test 4: Hook configuration validation
   log(colors.yellow, '\n🔧 Test Suite 4: Hook Configuration');
 
