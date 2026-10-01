@@ -123,7 +123,3 @@ The elf should use isolated sub-agent contexts where available. If the host does
 - Workers report changed files, tests, risks, and follow-up work.
 - Workers must not make overlapping edits unless the elf explicitly serializes the work.
 - Failed work is retried with a corrected brief when useful; unrelated completed work is not restarted.
-
-## Development
-
-Keep behavioral guidance in `core/`. Harness-specific instructions belong in the adapter entry points. Validate the Codex plugin before distribution with the Codex plugin validator.
